@@ -25,10 +25,14 @@ public static class ApplicationConfigurationExtensions
         #region Repositories
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IBookRepository, BookRepository>();
+        services.AddScoped<IAuthorRepository, AuthorRepository>();
+
         #endregion
 
         #region Services
         services.AddScoped<IBookService, BookService>();
+        services.AddScoped<IAuthorService, AuthorService>();
+        services.AddScoped<AuditLogService>();
 
         #endregion
 
