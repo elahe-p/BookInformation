@@ -11,9 +11,11 @@ public class ApplicationDbContext : DbContext
     }
 
     #region Domain Model
-    public DbSet<Book> Books{ get; set; }
-    public DbSet<Author> Authors{ get; set; }
-    public DbSet<BookAuthor> BookAuthors{ get; set; }
+    public DbSet<Book> Books { get; set; }
+    public DbSet<Author> Authors { get; set; }
+    public DbSet<BookAuthor> BookAuthors { get; set; }
+    public DbSet<AuditLog> AuditLogs { get; set; }
+
     #endregion
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
