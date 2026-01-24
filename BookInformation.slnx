@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="BookInformation.Application/BookInformation.Application.csproj" />
+  <Project Path="BookInformation.Domain/BookInformation.Domain.csproj" />
+  <Project Path="BookInformation.Infrastructure/BookInformation.Infrastructure.csproj" />
+  <Project Path="BookInformation.WebAPI/BookInformation.WebAPI.csproj" />
+</Solution>
