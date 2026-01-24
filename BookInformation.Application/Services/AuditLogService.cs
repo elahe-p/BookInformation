@@ -61,7 +61,7 @@ public class AuditLogService : IAuditLogService
                 NewValue: i.NewValue
             )).ToList();
 
-        return new PagedResult<AuditLogDto>(items, totalCount);
+        return new PagedResult<AuditLogDto>(items, totalCount, dto.Page, dto.PageSize);
     }
 
     public async Task AddAsync(AuditLog log, CancellationToken cancellationToken)
@@ -73,4 +73,5 @@ public class AuditLogService : IAuditLogService
     {
         await _repository.AddRangeAsync(logs, cancellationToken);
     }
+
 }

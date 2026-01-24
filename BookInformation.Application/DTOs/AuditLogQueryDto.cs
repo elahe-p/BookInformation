@@ -7,7 +7,7 @@ public record AuditLogQueryDto(
     Guid EntityId,
     AuditActionEnum? Action,
     string? PropertyName,
-    int Page,
-    int PageSize,
-    bool Descending
+    int Page = 1,
+    int PageSize = 20,
+    bool Descending = true
 );
