@@ -24,4 +24,20 @@ public class Book
         PublishDate = publishDate;
     }
 
+    public void AddAuthor(Guid authorId)
+    {
+        if (Authors.Any(b => b.AuthorId == authorId))
+            return;
+
+        Authors.Add(new BookAuthor(Id, authorId));
+    }
+
+    public void RemoveAuthor(Guid authorId)
+    {
+        var author = Authors.FirstOrDefault(b => b.AuthorId == authorId);
+
+        if (author is not null)
+            Authors.Remove(author);
+
+    }
 }

@@ -8,10 +8,12 @@ namespace BookInformation.Application.Services;
 public class AuthorService : IAuthorService
 {
     private readonly IAuthorRepository _authorRepository;
+    private readonly IAuditLogService _auditLogService;
 
-    public AuthorService(IAuthorRepository authorRepository)
+    public AuthorService(IAuthorRepository authorRepository, IAuditLogService auditLogService)
     {
         _authorRepository = authorRepository;
+        _auditLogService = auditLogService;
     }
 
     public async Task<List<Author>> GetByIdsAsync(List<Guid> ids, CancellationToken cancellationToken)
@@ -29,6 +31,34 @@ public class AuthorService : IAuthorService
         if (count != authorIds.Distinct().Count())
         {
             throw new ValidationException("Invalid author Ids");
+        }
+    }
+
+    public void ApplyAuthorChanges(Book book, IEnumerable<Guid> authorIds, List<AuditLog> audits)
+    {
+        var currentAuthors = book.Authors.Select(a => a.AuthorId).ToHashSet();
+        var updated = authorIds.ToHashSet();
+
+        foreach (var added in updated.Except(currentAuthors))
+        {
+            book.AddAuthor(added);
+            audits.Add(_auditLogService.PropertyChanged(
+                "Book",
+                book.Id,
+                "Author",
+                null,
+                added.ToString()));
+        }
+
+        foreach (var removed in currentAuthors.Except(updated))
+        {
+            book.RemoveAuthor(removed);
+            audits.Add(_auditLogService.PropertyChanged(
+                "Book",
+                book.Id,
+                "Author",
+                removed.ToString(),
+                null));
         }
     }
 }
