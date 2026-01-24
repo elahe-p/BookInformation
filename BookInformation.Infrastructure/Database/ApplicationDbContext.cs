@@ -1,3 +1,4 @@
+using BookInformation.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookInformation.Infrastructure.Database;
@@ -10,7 +11,9 @@ public class ApplicationDbContext : DbContext
     }
 
     #region Domain Model
-
+    public DbSet<Book> Books{ get; set; }
+    public DbSet<Author> Authors{ get; set; }
+    public DbSet<BookAuthor> BookAuthors{ get; set; }
     #endregion
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
