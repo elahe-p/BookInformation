@@ -1,4 +1,8 @@
+using BookInformation.Application.Abstraction.Repositories;
+using BookInformation.Application.Abstraction.Services;
+using BookInformation.Application.Services;
 using BookInformation.Infrastructure.Database;
+using BookInformation.Infrastructure.Repositories;
 using BookInformation.WebAPI.Middleware;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,9 +22,13 @@ public static class ApplicationConfigurationExtensions
 
         services.AddControllers();
 
+        #region Repositories
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IBookRepository, BookRepository>();
+        #endregion
 
         #region Services
-        // services.AddScoped<>();
+        services.AddScoped<IBookService, BookService>();
 
         #endregion
 
@@ -42,7 +50,7 @@ public static class ApplicationConfigurationExtensions
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web v1"));
+            app.UseSwaggerUI();
         }
         else
         {
