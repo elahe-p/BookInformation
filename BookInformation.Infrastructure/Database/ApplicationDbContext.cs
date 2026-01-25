@@ -26,7 +26,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             .HasForeignKey(ba => ba.BookId);
 
         modelBuilder.Entity<BookAuthor>().HasKey(ba => new { ba.BookId, ba.AuthorId });
-       
+
         base.OnModelCreating(modelBuilder);
     }
 

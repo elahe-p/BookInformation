@@ -22,7 +22,7 @@ public class BooksController : ControllerBase
         return CreatedAtAction(
             nameof(GetById),
             new { id = bookId },
-            null
+            new { id = bookId }
         );
     }
 

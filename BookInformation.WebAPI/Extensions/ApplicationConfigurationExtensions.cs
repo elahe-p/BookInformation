@@ -8,7 +8,7 @@ using BookInformation.Infrastructure.Repositories;
 using BookInformation.WebAPI.Middleware;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookInformation.WebAPI.Extentions;
+namespace BookInformation.WebAPI.Extensions;
 
 public static class ApplicationConfigurationExtensions
 {
@@ -40,7 +40,7 @@ public static class ApplicationConfigurationExtensions
 
         #endregion
 
-        builder.Services.AddAutoMapper(typeof(ConfigureMaping));
+        builder.Services.AddAutoMapper(typeof(ConfigureMapping));
 
         #region DataBase
         string? connectionString = configuration.GetConnectionString("applicationConnectionString");
@@ -64,12 +64,11 @@ public static class ApplicationConfigurationExtensions
         }
         app.UseHttpsRedirection();
 
-        app.UseRouting();
-
         #region MiddleWare
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         #endregion
 
+        app.UseRouting();
         app.MapControllers();
 
         return app;

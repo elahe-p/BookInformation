@@ -27,6 +27,9 @@ public class AuditLogRepository : IAuditLogRepository
 
     public async Task<PagedResult<AuditLog>> GetAsync(AuditLogQueryDto dto, CancellationToken cancellationToken)
     {
+        var page = dto.Page < 1 ? 1 : dto.Page;
+        var pageSize = dto.PageSize <= 0 ? 20 : dto.PageSize;
+
         IQueryable<AuditLog> query = _context.AuditLogs.Where(a =>
             a.EntityName == dto.EntityName &&
             a.EntityId == dto.EntityId);
@@ -37,6 +40,12 @@ public class AuditLogRepository : IAuditLogRepository
         if (!string.IsNullOrWhiteSpace(dto.PropertyName))
             query = query.Where(a => a.PropertyName == dto.PropertyName);
 
+        if (dto.From.HasValue)
+            query = query.Where(a => a.ChangedAt >= dto.From);
+
+        if (dto.To.HasValue)
+            query = query.Where(a => a.ChangedAt <= dto.To);
+
         var totalCount = await query.CountAsync(cancellationToken);
 
         query = dto.Descending
@@ -44,8 +53,8 @@ public class AuditLogRepository : IAuditLogRepository
             : query.OrderBy(a => a.ChangedAt);
 
         var items = await query
-            .Skip((dto.Page - 1) * dto.PageSize)
-            .Take(dto.PageSize)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
 
         return new PagedResult<AuditLog>(items, totalCount, dto.Page, dto.PageSize);

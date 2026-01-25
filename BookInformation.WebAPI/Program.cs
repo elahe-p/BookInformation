@@ -1,4 +1,4 @@
-using BookInformation.WebAPI.Extentions;
+using BookInformation.WebAPI.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args).ConfigureApplication();

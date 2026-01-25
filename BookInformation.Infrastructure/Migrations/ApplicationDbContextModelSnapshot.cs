@@ -34,6 +34,10 @@ namespace BookInformation.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("ChangedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("EntityId")
                         .HasColumnType("uniqueidentifier");
 
@@ -99,30 +103,34 @@ namespace BookInformation.Infrastructure.Migrations
 
             modelBuilder.Entity("BookInformation.Domain.Entities.BookAuthor", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("BookId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AuthorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
+                    b.HasKey("BookId", "AuthorId");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("BookAuthors");
                 });
 
             modelBuilder.Entity("BookInformation.Domain.Entities.BookAuthor", b =>
                 {
+                    b.HasOne("BookInformation.Domain.Entities.Author", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BookInformation.Domain.Entities.Book", null)
                         .WithMany("Authors")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("BookInformation.Domain.Entities.Book", b =>
