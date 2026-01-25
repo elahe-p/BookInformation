@@ -7,6 +7,8 @@ public record AuditLogQueryDto(
     Guid EntityId,
     AuditActionEnum? Action,
     string? PropertyName,
+    DateTimeOffset? From,
+    DateTimeOffset? To,
     int Page = 1,
     int PageSize = 20,
     bool Descending = true

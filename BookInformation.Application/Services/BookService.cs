@@ -84,31 +84,14 @@ public class BookService : IBookService
     public async Task<BookInfoDto?> GetByIdAsync(Guid bookId, CancellationToken cancellationToken)
     {
         var book = await _bookRepository.GetByIdWithAuthorsAsync(bookId, cancellationToken) ?? throw new NotFoundException($"Book '{bookId}' not found");
+        return _mapper.Map<BookInfoDto>(book);
 
-
-        var bookInfoDto = _mapper.Map<BookInfoDto>(book);
-
-        var bookinfo = new BookInfoDto(book.Id, book.Title, book.Description, book.PublishDate, book.Authors.Select(a => a.AuthorId), string.Join(", ", book.Authors.Select(a => $"{a.Author.FirstName} {a.Author.LastName}")));
-
-        return bookinfo;
     }
 
     public async Task<List<BookInfoDto>> GetAllAsync(CancellationToken cancellationToken)
     {
         var books = await _bookRepository.GetAllWithAuthorsAsync(cancellationToken);
 
-        var bookInfoDto = _mapper.Map<List<BookInfoDto>>(books);
-
-
-        var bookInfoList = books.Select(book => new BookInfoDto(
-               book.Id,
-               book.Title,
-               book.Description,
-               book.PublishDate,
-               book.Authors.Select(a => a.AuthorId).ToList(),
-               string.Join(", ", book.Authors.Select(a => $"{a.Author.FirstName} {a.Author.LastName}"))
-           )).ToList();
-
-        return bookInfoList;
+        return _mapper.Map<List<BookInfoDto>>(books);
     }
 }
