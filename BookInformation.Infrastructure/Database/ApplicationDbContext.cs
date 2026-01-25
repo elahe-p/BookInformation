@@ -20,6 +20,13 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     #endregion
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Book>()
+            .HasMany(b => b.Authors)
+            .WithOne()
+            .HasForeignKey(ba => ba.BookId);
+
+        modelBuilder.Entity<BookAuthor>().HasKey(ba => new { ba.BookId, ba.AuthorId });
+       
         base.OnModelCreating(modelBuilder);
     }
 

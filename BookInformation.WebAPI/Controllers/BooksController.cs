@@ -40,4 +40,11 @@ public class BooksController : ControllerBase
         var book = await _bookService.GetByIdAsync(id, cancellationToken);
         return Ok(book);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Get(CancellationToken cancellationToken)
+    {
+        var book = await _bookService.GetAllAsync(cancellationToken);
+        return Ok(book);
+    }
 }

@@ -5,5 +5,6 @@ public record BookInfoDto(
     string Title,
     string Description,
     DateOnly PublishDate,
-    IEnumerable<Guid> AuthorIds
+    IEnumerable<Guid> AuthorIds,
+    string AuthorNames
 );

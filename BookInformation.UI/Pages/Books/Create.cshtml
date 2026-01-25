@@ -1,0 +1,47 @@
+@page
+@model CreateModel
+@{
+    ViewData["Title"] = "Add Book";
+}
+
+<h2>Add Book</h2>
+
+<form method="post" class="mt-4">
+
+    <div class="mb-3">
+        <label asp-for="Book.Title" class="form-label"></label>
+        <input asp-for="Book.Title" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Book.Description" class="form-label"></label>
+        <textarea asp-for="Book.Description" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Book.PublishDate" class="form-label"></label>
+        <input asp-for="Book.PublishDate" type="date" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Book.AuthorIds" class="form-label">Authors</label>
+        <select id="authors-select" asp-for="Book.AuthorIds" asp-items="Model.AuthorOptions" multiple>
+        </select>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Save</button>
+        <a asp-page="Index" class="btn btn-secondary ms-2">Cancel</a>
+    </div>
+
+</form>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Choices('#authors-select', {
+                removeItemButton: true
+            });
+        });
+    </script>
+}

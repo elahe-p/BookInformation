@@ -56,10 +56,8 @@ public class BookService : IBookService
 
 
         var changes = new List<PropertyChange>();
-        changes.AddRange(book.UpdateDetails(
-            dto.Title,
-            dto.Description,
-            dto.PublishDate));
+
+        changes.AddRange(book.UpdateDetails(dto.Title, dto.Description, dto.PublishDate));
 
         changes.AddRange(book.SetAuthors(dto.AuthorIds));
 
@@ -84,8 +82,24 @@ public class BookService : IBookService
     {
         var book = await _bookRepository.GetByIdWithAuthorsAsync(bookId, cancellationToken) ?? throw new NotFoundException($"Book '{bookId}' not found"); ;
 
-        var bookinfo = new BookInfoDto(book.Id, book.Title, book.Description, book.PublishDate, book.Authors.Select(a => a.AuthorId));
+        var bookinfo = new BookInfoDto(book.Id, book.Title, book.Description, book.PublishDate, book.Authors.Select(a => a.AuthorId), string.Join(", ", book.Authors.Select(a => $"{a.Author.FirstName} {a.Author.LastName}")));
 
         return bookinfo;
+    }
+
+    public async Task<List<BookInfoDto>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        var books = await _bookRepository.GetAllWithAuthorsAsync(cancellationToken);
+
+        var bookInfoList = books.Select(book => new BookInfoDto(
+               book.Id,
+               book.Title,
+               book.Description,
+               book.PublishDate,
+               book.Authors.Select(a => a.AuthorId).ToList(),
+               string.Join(", ", book.Authors.Select(a => $"{a.Author.FirstName} {a.Author.LastName}"))
+           )).ToList();
+
+        return bookInfoList;
     }
 }

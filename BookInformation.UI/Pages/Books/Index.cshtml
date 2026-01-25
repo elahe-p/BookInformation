@@ -1,0 +1,45 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Books";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Books</h2>
+    <a class="btn btn-primary" asp-page="Create">Add Book</a>
+    <a class="btn btn-primary" asp-page="/Authors/Create">Add Author</a>
+</div>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Author</th>
+            <th>PublishDate</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model.Books)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>@book.Description</td>
+                <td>@book.AuthorNames</td>
+                <td>@book.PublishDate.ToString("yyyy/MM/dd")</td>
+                <td class="text-nowrap">
+                    <a class="btn btn-sm btn-outline-primary" asp-page="/Books/Edit" asp-route-id="@book.Id">
+                        Edit
+                    </a>
+
+                    <a class="btn btn-sm btn-outline-secondary ms-1" asp-page="/AuditLogs/Index"
+                        asp-route-bookId="@book.Id">
+                        Audit Log
+                    </a>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
