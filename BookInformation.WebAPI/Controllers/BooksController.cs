@@ -9,7 +9,6 @@ namespace BookInformation.WebAPI.Controllers;
 public class BooksController : ControllerBase
 {
     private readonly IBookService _bookService;
-
     public BooksController(IBookService bookService)
     {
         _bookService = bookService;
@@ -44,7 +43,7 @@ public class BooksController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        var book = await _bookService.GetAllAsync(cancellationToken);
-        return Ok(book);
+        var books = await _bookService.GetAllAsync(cancellationToken);
+        return Ok(books);
     }
 }

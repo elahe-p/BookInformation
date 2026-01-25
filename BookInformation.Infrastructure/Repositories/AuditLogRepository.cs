@@ -27,10 +27,9 @@ public class AuditLogRepository : IAuditLogRepository
 
     public async Task<PagedResult<AuditLog>> GetAsync(AuditLogQueryDto dto, CancellationToken cancellationToken)
     {
-        IQueryable<AuditLog> query = _context.AuditLogs
-            .Where(a =>
-                a.EntityName == dto.EntityName &&
-                a.EntityId == dto.EntityId);
+        IQueryable<AuditLog> query = _context.AuditLogs.Where(a =>
+            a.EntityName == dto.EntityName &&
+            a.EntityId == dto.EntityId);
 
         if (dto.Action.HasValue)
             query = query.Where(a => a.Action == dto.Action);
@@ -49,10 +48,6 @@ public class AuditLogRepository : IAuditLogRepository
             .Take(dto.PageSize)
             .ToListAsync(cancellationToken);
 
-        return new PagedResult<AuditLog>(
-            items,
-            totalCount,
-            dto.Page,
-            dto.PageSize);
+        return new PagedResult<AuditLog>(items, totalCount, dto.Page, dto.PageSize);
     }
 }

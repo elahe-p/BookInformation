@@ -12,12 +12,10 @@ public class ConfigureMaping : Profile
         // CreateMap<BookInfoDto, Book>().ReverseMap();
 
         CreateMap<Book, BookInfoDto>()
-            .ForCtorParam("authorIds", opt => opt.MapFrom(src =>
-                src.Authors.Select(a => a.AuthorId)))
-
-            .ForCtorParam("authorNames", opt => opt.MapFrom(src =>
-                string.Join(", ", src.Authors.Select(a =>
-                    $"{a.Author.FirstName} {a.Author.LastName}"))));
+            .ForCtorParam("AuthorIds", opt => 
+                opt.MapFrom(src => src.Authors.Select(a => a.AuthorId)))
+            .ForCtorParam("AuthorNames", opt => 
+                opt.MapFrom(src => string.Join(", ", src.Authors.Select(a => $"{a.Author.FirstName} {a.Author.LastName}"))));
 
         #endregion
 
