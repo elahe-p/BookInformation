@@ -1,3 +1,4 @@
+using AutoMapper;
 using BookInformation.Application.Abstraction;
 using BookInformation.Application.Abstraction.Repositories;
 using BookInformation.Application.Abstraction.Services;
@@ -15,13 +16,15 @@ public class BookService : IBookService
     private readonly IAuthorService _authorService;
     private readonly IAuditLogService _auditLogService;
     private readonly IApplicationDbContext _dbContext;
+    private readonly IMapper _mapper;
 
-    public BookService(IBookRepository bookRepository, IAuthorService authorService, IAuditLogService auditLogService, IApplicationDbContext dbContext)
+    public BookService(IBookRepository bookRepository, IAuthorService authorService, IAuditLogService auditLogService, IApplicationDbContext dbContext, IMapper mapper)
     {
         _bookRepository = bookRepository;
         _authorService = authorService;
         _auditLogService = auditLogService;
         _dbContext = dbContext;
+        _mapper = mapper;
     }
 
     public async Task<Guid> CreateAsync(BookDto dto, CancellationToken cancellationToken)
@@ -80,7 +83,10 @@ public class BookService : IBookService
 
     public async Task<BookInfoDto?> GetByIdAsync(Guid bookId, CancellationToken cancellationToken)
     {
-        var book = await _bookRepository.GetByIdWithAuthorsAsync(bookId, cancellationToken) ?? throw new NotFoundException($"Book '{bookId}' not found"); ;
+        var book = await _bookRepository.GetByIdWithAuthorsAsync(bookId, cancellationToken) ?? throw new NotFoundException($"Book '{bookId}' not found");
+
+
+        var bookInfoDto = _mapper.Map<BookInfoDto>(book);
 
         var bookinfo = new BookInfoDto(book.Id, book.Title, book.Description, book.PublishDate, book.Authors.Select(a => a.AuthorId), string.Join(", ", book.Authors.Select(a => $"{a.Author.FirstName} {a.Author.LastName}")));
 
@@ -90,6 +96,9 @@ public class BookService : IBookService
     public async Task<List<BookInfoDto>> GetAllAsync(CancellationToken cancellationToken)
     {
         var books = await _bookRepository.GetAllWithAuthorsAsync(cancellationToken);
+
+        var bookInfoDto = _mapper.Map<List<BookInfoDto>>(books);
+
 
         var bookInfoList = books.Select(book => new BookInfoDto(
                book.Id,

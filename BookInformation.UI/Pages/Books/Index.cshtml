@@ -6,8 +6,10 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Books</h2>
-    <a class="btn btn-primary" asp-page="Create">Add Book</a>
-    <a class="btn btn-primary" asp-page="/Authors/Create">Add Author</a>
+    <div class="btn-group">
+        <a class="btn btn-success" asp-page="Create">New Book</a>
+        <a class="btn btn-outline-secondary" asp-page="/Authors/Create">Add Author </a>
+    </div>
 </div>
 
 <table class="table table-striped table-bordered">

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 using BookInformation.Application.Abstraction;
 using BookInformation.Application.Abstraction.Repositories;
 using BookInformation.Application.Abstraction.Services;
@@ -10,41 +11,44 @@ namespace BookInformation.Application.Services;
 public class AuthorService : IAuthorService
 {
     private readonly IAuthorRepository _authorRepository;
+    private readonly IMapper _mapper;
     private readonly IApplicationDbContext _dbContext;
 
 
-    public AuthorService(IAuthorRepository authorRepository, IApplicationDbContext dbContext)
+    public AuthorService(IAuthorRepository authorRepository, IApplicationDbContext dbContext, IMapper mapper)
     {
         _authorRepository = authorRepository;
         _dbContext = dbContext;
+        _mapper = mapper;
     }
 
-    public async Task<Guid> CreateAsync(AuthorDto dto, CancellationToken cancellationToken)
+    public async Task<Guid> CreateAsync(AuthorCreateDto dto, CancellationToken cancellationToken)
     {
         var author = new Author(dto.FirstName, dto.LastName);
 
         await _authorRepository.AddAsync(author, cancellationToken);
-     
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return author.Id;
     }
 
-    public async Task<List<Author>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<List<AuthorDto>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await _authorRepository.GetAllAsync(cancellationToken);
-
+        var authors = await _authorRepository.GetAllAsync(cancellationToken);
+        return _mapper.Map<List<AuthorDto>>(authors);
     }
 
-    public async Task<List<Author>> GetByIdsAsync(List<Guid> ids, CancellationToken cancellationToken)
+    public async Task<List<AuthorDto>> GetByIdsAsync(List<Guid> ids, CancellationToken cancellationToken)
     {
-        return await _authorRepository.GetByIdsAsync(ids, cancellationToken);
+        var authors = await _authorRepository.GetByIdsAsync(ids, cancellationToken);
+        return _mapper.Map<List<AuthorDto>>(authors);
     }
 
-    public async Task<Author> GetByIdAsync(Guid id)
+    public async Task<AuthorDto> GetByIdAsync(Guid id)
     {
-        return await _authorRepository.GetByIdAsync(id);
-
+        var author = await _authorRepository.GetByIdAsync(id);
+        return _mapper.Map<AuthorDto>(author);
     }
 
     /// <summary>
