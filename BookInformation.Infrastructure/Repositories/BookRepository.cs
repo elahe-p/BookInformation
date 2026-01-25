@@ -23,11 +23,20 @@ public class BookRepository : IBookRepository
     {
         return await _context.Books
             .Include(b => b.Authors)
+            .ThenInclude(ba => ba.Author)
             .FirstOrDefaultAsync(b => b.Id == id, cancellationToken: cancellationToken);
     }
 
     public async Task<Book?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
+    }
+
+    public async Task<List<Book>> GetAllWithAuthorsAsync(CancellationToken cancellationToken)
+    {
+        return await _context.Books
+           .Include(b => b.Authors)
+           .ThenInclude(ba => ba.Author)
+           .ToListAsync(cancellationToken: cancellationToken);
     }
 }

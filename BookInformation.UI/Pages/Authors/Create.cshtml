@@ -1,0 +1,26 @@
+@page
+@model CreateAuthorModel
+@{
+    ViewData["Title"] = "Add Author";
+}
+
+<h2>Add Author</h2>
+
+<form method="post" class="mt-4">
+
+    <div class="mb-3">
+        <label asp-for="Author.FirstName" class="form-label"></label>
+        <input asp-for="Author.FirstName" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Author.LastName" class="form-label"></label>
+        <input asp-for="Author.LastName" class="form-control" />
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Save</button>
+        <a asp-page="/Books/Index" class="btn btn-secondary ms-2">Cancel</a>
+    </div>
+
+</form>
