@@ -16,7 +16,7 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] AuthorDto dto, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Create([FromBody] AuthorCreateDto dto, CancellationToken cancellationToken = default)
     {
         var authorId = await _authorService.CreateAsync(dto, cancellationToken);
 

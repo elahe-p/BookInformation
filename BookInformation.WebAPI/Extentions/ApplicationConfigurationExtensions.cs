@@ -1,6 +1,7 @@
 using BookInformation.Application.Abstraction;
 using BookInformation.Application.Abstraction.Repositories;
 using BookInformation.Application.Abstraction.Services;
+using BookInformation.Application.Mappings;
 using BookInformation.Application.Services;
 using BookInformation.Infrastructure.Database;
 using BookInformation.Infrastructure.Repositories;
@@ -38,6 +39,8 @@ public static class ApplicationConfigurationExtensions
         services.AddScoped<IAuditLogService, AuditLogService>();
 
         #endregion
+
+        builder.Services.AddAutoMapper(typeof(ConfigureMaping));
 
         #region DataBase
         string? connectionString = configuration.GetConnectionString("applicationConnectionString");

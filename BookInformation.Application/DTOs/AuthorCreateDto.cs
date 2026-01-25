@@ -1,7 +1,6 @@
 namespace BookInformation.Application.DTOs;
 
-public record AuthorDto(
-    Guid Id,
+public record AuthorCreateDto(
     string FirstName,
     string LastName
 );

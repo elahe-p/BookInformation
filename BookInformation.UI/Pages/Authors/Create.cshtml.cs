@@ -12,7 +12,7 @@ public class CreateAuthorModel : PageModel
     }
 
     [BindProperty]
-    public CreateAuthorDto Author { get; set; } = new("", "");
+    public AuthorCreateDto Author { get; set; } = new("", "");
 
     public async Task<IActionResult> OnPostAsync()
     {
