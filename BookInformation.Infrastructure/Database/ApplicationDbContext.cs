@@ -1,9 +1,10 @@
+using BookInformation.Application.Abstraction;
 using BookInformation.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookInformation.Infrastructure.Database;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -21,4 +22,7 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
     }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        => base.SaveChangesAsync(cancellationToken);
 }

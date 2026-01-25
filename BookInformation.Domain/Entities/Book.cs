@@ -1,3 +1,5 @@
+using BookInformation.Domain.Primitives;
+
 namespace BookInformation.Domain.Entities;
 
 public class Book
@@ -6,7 +8,8 @@ public class Book
     public string Title { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
     public DateOnly PublishDate { get; private set; }
-    public ICollection<BookAuthor> Authors { get; set; } = new List<BookAuthor>();
+    public IReadOnlyCollection<BookAuthor> Authors => _authors;
+    private readonly List<BookAuthor> _authors = new();
 
     private Book() { }
 
@@ -17,27 +20,56 @@ public class Book
         PublishDate = publishDate;
     }
 
-    public void Update(string title, string description, DateOnly publishDate)
+    public IReadOnlyCollection<PropertyChange> UpdateDetails(string title, string description, DateOnly publishDate)
+    {
+        var changes = new List<PropertyChange>();
+
+        if (Title != title)
+            changes.Add(new PropertyChange("Title", Title, title));
+
+        if (Description != description)
+            changes.Add(new PropertyChange("Description", Description, description));
+
+        if (PublishDate != publishDate)
+            changes.Add(new PropertyChange(
+                "PublishDate",
+                PublishDate.ToString("yyyy-MM-dd"),
+                publishDate.ToString("yyyy-MM-dd")));
+
+        Update(title, description, publishDate);
+
+        return changes;
+    }
+
+    public IReadOnlyCollection<PropertyChange> SetAuthors(IEnumerable<Guid> authorIds)
+    {
+        var changes = new List<PropertyChange>();
+
+        var updated = authorIds.Distinct().ToHashSet();
+        var current = _authors.Select(a => a.AuthorId).ToHashSet();
+
+        foreach (var added in updated.Except(current))
+        {
+            _authors.Add(new BookAuthor(Id, added));
+            changes.Add(new PropertyChange("Author", null, added.ToString()));
+        }
+
+        foreach (var removed in current.Except(updated))
+        {
+            var entity = _authors.First(a => a.AuthorId == removed);
+            _authors.Remove(entity);
+            changes.Add(new PropertyChange("Author", removed.ToString(), null));
+        }
+
+        return changes;
+    }
+
+    private void Update(string title, string description, DateOnly publishDate)
     {
         Title = title;
         Description = description;
         PublishDate = publishDate;
     }
 
-    public void AddAuthor(Guid authorId)
-    {
-        if (Authors.Any(b => b.AuthorId == authorId))
-            return;
 
-        Authors.Add(new BookAuthor(Id, authorId));
-    }
-
-    public void RemoveAuthor(Guid authorId)
-    {
-        var author = Authors.FirstOrDefault(b => b.AuthorId == authorId);
-
-        if (author is not null)
-            Authors.Remove(author);
-
-    }
 }

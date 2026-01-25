@@ -2,7 +2,6 @@ using BookInformation.Application.Abstraction.Repositories;
 using BookInformation.Application.Abstraction.Services;
 using BookInformation.Application.DTOs;
 using BookInformation.Domain.Entities;
-using BookInformation.Domain.Enums;
 
 namespace BookInformation.Application.Services;
 
@@ -15,53 +14,18 @@ public class AuditLogService : IAuditLogService
         _repository = repository;
     }
 
-    public AuditLog PropertyChanged(
-       string entityName,
-       Guid entityId,
-       string property,
-       string? oldValue,
-       string? newValue)
+    public async Task<PagedResult<AuditLogDto>> GetAsync(AuditLogQueryDto dto, CancellationToken cancellationToken)
     {
-        return new AuditLog(entityName, entityId, AuditActionEnum.Updated, property, oldValue, newValue);
-    }
+        var result = await _repository.GetAsync(dto, cancellationToken);
 
-    public AuditLog Created(string entityName, Guid entityId)
-    {
-        return new AuditLog(entityName, entityId, AuditActionEnum.Created, "Entity");
-    }
+        var items = result.Items.Select(a => new AuditLogDto(
+            a.Action,
+            a.ChangedAt,
+            a.PropertyName,
+            a.OldValue,
+            a.NewValue)).ToList();
 
-    public async Task<PagedResult<AuditLogDto>> GetAsync(AuditLogQueryDto dto)
-    {
-        IQueryable<AuditLog> query = _repository.Query().Where(i =>
-           i.EntityName == dto.EntityType &&
-           i.EntityId == dto.EntityId);
-
-
-        if (dto.Action.HasValue)
-            query = query.Where(i => i.Action == dto.Action);
-
-        if (!string.IsNullOrWhiteSpace(dto.PropertyName))
-            query = query.Where(i => i.PropertyName == dto.PropertyName);
-
-        var totalCount = query.Count();
-
-        query = dto.Descending
-            ? query.OrderByDescending(i => i.ChangedAt)
-            : query.OrderBy(i => i.ChangedAt);
-
-
-        List<AuditLogDto>? items = query
-            .Skip((dto.Page - 1) * dto.PageSize)
-            .Take(dto.PageSize)
-            .Select(i => new AuditLogDto(
-                i.Action,
-                ChangedAt: i.ChangedAt,
-                PropertyName: i.PropertyName,
-                OldValue: i.OldValue,
-                NewValue: i.NewValue
-            )).ToList();
-
-        return new PagedResult<AuditLogDto>(items, totalCount, dto.Page, dto.PageSize);
+        return new PagedResult<AuditLogDto>(items, result.TotalCount, result.Page, result.PageSize);
     }
 
     public async Task AddAsync(AuditLog log, CancellationToken cancellationToken)
@@ -69,7 +33,7 @@ public class AuditLogService : IAuditLogService
         await _repository.AddAsync(log, cancellationToken);
     }
 
-    public async Task AddRangeAsync(List<AuditLog> logs, CancellationToken cancellationToken)
+    public async Task AddRangeAsync(IEnumerable<AuditLog> logs, CancellationToken cancellationToken)
     {
         await _repository.AddRangeAsync(logs, cancellationToken);
     }

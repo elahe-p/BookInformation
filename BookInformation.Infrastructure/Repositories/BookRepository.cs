@@ -1,5 +1,4 @@
 using BookInformation.Application.Abstraction.Repositories;
-using BookInformation.Application.DTOs;
 using BookInformation.Domain.Entities;
 using BookInformation.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -20,14 +19,15 @@ public class BookRepository : IBookRepository
         await _context.Books.AddAsync(book, cancellationToken);
     }
 
-    public async Task<Book?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
-    {
-        return await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
-    }
     public async Task<Book?> GetByIdWithAuthorsAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _context.Books
             .Include(b => b.Authors)
             .FirstOrDefaultAsync(b => b.Id == id, cancellationToken: cancellationToken);
+    }
+
+    public async Task<Book?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
     }
 }
