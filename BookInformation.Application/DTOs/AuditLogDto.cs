@@ -6,6 +6,7 @@ public record AuditLogDto(
     AuditActionEnum Action,
     DateTimeOffset ChangedAt,
     string PropertyName,
+    string Description,
     string? OldValue,
     string? NewValue
 );

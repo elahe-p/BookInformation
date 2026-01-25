@@ -24,12 +24,15 @@ public class BookRepository : IBookRepository
         return await _context.Books
             .Include(b => b.Authors)
             .ThenInclude(ba => ba.Author)
+            .AsNoTracking()
             .FirstOrDefaultAsync(b => b.Id == id, cancellationToken: cancellationToken);
     }
 
     public async Task<Book?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
+        return await _context.Books
+            .AsNoTracking()
+            .FirstOrDefaultAsync(b => b.Id == id);
     }
 
     public async Task<List<Book>> GetAllWithAuthorsAsync(CancellationToken cancellationToken)
@@ -37,6 +40,7 @@ public class BookRepository : IBookRepository
         return await _context.Books
            .Include(b => b.Authors)
            .ThenInclude(ba => ba.Author)
+           .AsNoTracking()
            .ToListAsync(cancellationToken: cancellationToken);
     }
 }

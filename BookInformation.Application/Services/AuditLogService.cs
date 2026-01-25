@@ -1,3 +1,4 @@
+using AutoMapper;
 using BookInformation.Application.Abstraction.Repositories;
 using BookInformation.Application.Abstraction.Services;
 using BookInformation.Application.DTOs;
@@ -8,10 +9,12 @@ namespace BookInformation.Application.Services;
 public class AuditLogService : IAuditLogService
 {
     private readonly IAuditLogRepository _repository;
+    private readonly IMapper _mapper;
 
-    public AuditLogService(IAuditLogRepository repository)
+    public AuditLogService(IAuditLogRepository repository, IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
 
     public async Task<PagedResult<AuditLogDto>> GetAsync(AuditLogQueryDto dto, CancellationToken cancellationToken)
@@ -22,6 +25,7 @@ public class AuditLogService : IAuditLogService
             a.Action,
             a.ChangedAt,
             a.PropertyName,
+            a.Description,
             a.OldValue,
             a.NewValue)).ToList();
 

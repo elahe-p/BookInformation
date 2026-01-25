@@ -41,6 +41,7 @@ public class BookService : IBookService
                 EntityName,
                 book.Id,
                 AuditActionEnum.Created,
+                "Book",
                 $"Book '{book.Title}' was created");
 
         await _auditLogService.AddAsync(auditLog, cancellationToken);
@@ -71,11 +72,11 @@ public class BookService : IBookService
                book.Id,
                AuditActionEnum.Updated,
                change.Property,
+               $"Book '{book.Title}' was changed",
                change.OldValue,
                change.NewValue));
 
             await _auditLogService.AddRangeAsync(audits, cancellationToken);
-
         }
 
         await _dbContext.SaveChangesAsync(cancellationToken);
