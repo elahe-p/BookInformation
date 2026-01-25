@@ -16,9 +16,9 @@ public class AuditLogsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] AuditLogQueryDto dto)
+    public async Task<IActionResult> Get([FromQuery] AuditLogQueryDto dto, CancellationToken cancellationToken = default)
     {
-        var result = await _service.GetAsync(dto);
+        var result = await _service.GetAsync(dto, cancellationToken);
         return Ok(result);
     }
 }

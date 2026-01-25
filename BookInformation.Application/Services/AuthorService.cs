@@ -33,32 +33,4 @@ public class AuthorService : IAuthorService
             throw new ValidationException("Invalid author Ids");
         }
     }
-
-    public void ApplyAuthorChanges(Book book, IEnumerable<Guid> authorIds, List<AuditLog> audits)
-    {
-        var currentAuthors = book.Authors.Select(a => a.AuthorId).ToHashSet();
-        var updated = authorIds.ToHashSet();
-
-        foreach (var added in updated.Except(currentAuthors))
-        {
-            book.AddAuthor(added);
-            audits.Add(_auditLogService.PropertyChanged(
-                "Book",
-                book.Id,
-                "Author",
-                null,
-                added.ToString()));
-        }
-
-        foreach (var removed in currentAuthors.Except(updated))
-        {
-            book.RemoveAuthor(removed);
-            audits.Add(_auditLogService.PropertyChanged(
-                "Book",
-                book.Id,
-                "Author",
-                removed.ToString(),
-                null));
-        }
-    }
 }

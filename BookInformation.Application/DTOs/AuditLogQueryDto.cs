@@ -3,7 +3,7 @@ using BookInformation.Domain.Enums;
 namespace BookInformation.Application.DTOs;
 
 public record AuditLogQueryDto(
-    string EntityType,
+    string EntityName,
     Guid EntityId,
     AuditActionEnum? Action,
     string? PropertyName,

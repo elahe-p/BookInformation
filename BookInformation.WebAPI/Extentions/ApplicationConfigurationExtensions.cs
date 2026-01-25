@@ -1,3 +1,4 @@
+using BookInformation.Application.Abstraction;
 using BookInformation.Application.Abstraction.Repositories;
 using BookInformation.Application.Abstraction.Services;
 using BookInformation.Application.Services;
@@ -23,8 +24,6 @@ public static class ApplicationConfigurationExtensions
         services.AddControllers();
 
         #region Repositories
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
@@ -32,6 +31,8 @@ public static class ApplicationConfigurationExtensions
         #endregion
 
         #region Services
+        services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
+
         services.AddScoped<IBookService, BookService>();
         services.AddScoped<IAuthorService, AuthorService>();
         services.AddScoped<IAuditLogService, AuditLogService>();
@@ -58,10 +59,7 @@ public static class ApplicationConfigurationExtensions
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-        else
-        {
-            app.UseHttpsRedirection();
-        }
+        app.UseHttpsRedirection();
 
         app.UseRouting();
 

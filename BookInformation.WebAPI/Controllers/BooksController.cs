@@ -30,7 +30,6 @@ public class BooksController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] BookDto dto, CancellationToken cancellationToken)
     {
-
         await _bookService.UpdateAsync(id, dto, cancellationToken);
         return NoContent();
     }
@@ -39,10 +38,6 @@ public class BooksController : ControllerBase
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
         var book = await _bookService.GetByIdAsync(id, cancellationToken);
-
-        if (book == null)
-            return NotFound();
-
         return Ok(book);
     }
 }
